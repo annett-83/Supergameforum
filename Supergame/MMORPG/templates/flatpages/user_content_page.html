@@ -1,0 +1,84 @@
+{% extends 'flatpages/default.html' %}
+{% block content %}
+      <form method="POST" action="">
+        {% csrf_token%}
+
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-1wig{font-weight:bold;text-align:left;vertical-align:top}
+.tg .tg-wov1{font-family:"Arial Black", Gadget, sans-serif !important;font-size:13px;font-weight:bold;text-align:left;
+  vertical-align:top}
+.tg .tg-b3sw{background-color:#efefef;font-weight:bold;text-align:left;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+</style>
+
+<table class="tg" style="undefined;table-layout: fixed; width: 823px">
+<colgroup>
+<col style="width: 207px">
+<col style="width: 188px">
+<col style="width: 270px">
+<col style="width: 158px">
+</colgroup>
+<thead>
+  <tr>
+    <th class="tg-b3sw" colspan="4">Own Posts</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-wov1">Category</td>
+    <td class="tg-wov1">Title</td>
+    <td class="tg-wov1">Text</td>
+    <td class="tg-1wig">Action</td>
+  </tr>
+  {% for post in posts %}
+  <tr>
+    <td class="tg-0lax">{{post.category.name}}</td>
+    <td class="tg-0lax">{{post.title}}</td>
+    <td class="tg-0lax">{{post.text}}</td>
+    <td class="tg-0lax"><a href="{{post.get_edit_url}}">edit</a> <a href="{{post.get_delete_url}}">delete</a></td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td class="tg-b3sw" colspan="4">Pending Answers</td>
+  </tr>
+  <tr>
+    <td class="tg-1wig">Post</td>
+    <td class="tg-1wig">Autor</td>
+    <td class="tg-1wig">Answer</td>
+    <td class="tg-1wig">Action</td>
+  </tr>
+  {% for post in posts %}
+    {% for answer in post.unacceptedAnswers %}
+      <tr>
+        <td class="tg-0lax">{{answer.post.title}}</td>
+        <td class="tg-0lax">{{answer.user.username}}</td>
+        <td class="tg-0lax">{{answer.text}}</td>
+        <td class="tg-0lax"><a href="{{answer.get_accept_url}}">accept</a> <a href="{{answer.get_delete_url}}">delete</a></td>
+      </tr>
+    {% endfor %}
+  {% endfor %}
+  <tr>
+    <td class="tg-b3sw" colspan="4">User Subscriptions</td>
+  </tr>
+  <tr>
+    <td class="tg-0lax" colspan="4">
+<!--        {% for category in categories %}-->
+<!--            <input type="radio" name={{category.id}} value={{category}}>{{category.name}}<br>-->
+<!--        {% endfor %}-->
+<!--        {% for field in form %}-->
+<!--           <input type="radio" name={{field.name}} value={{category}}>{{category.name}}<br>&ndash;&gt;-->
+<!--&lt;!&ndash;          c&ndash;&gt;-->
+<!--        {% endfor %}-->
+          {{form.as_table}}
+    </td>
+  </tr>
+</tbody>
+</table>
+        <input type="submit">
+      </form>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+
+{% block title %}
+Supergame Bord
+{% endblock title %}
+
+{% for category in categories %}
+<h5 style="text-align: left;">{{category.name}}</h5>
+
+{% for post in category.posts %}
+<style type="text/css">
+.tg  {border-collapse:collapse;border-spacing:0;}
+.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-eycs{font-family:"Arial Black", Gadget, sans-serif !important;font-size:13px;text-align:left;vertical-align:top}
+.tg .tg-0lax{text-align:left;vertical-align:top}
+
+
+
+</style>
+
+<table class="tg" style="undefined;table-layout: fixed; width: 852px">
+    <colgroup>
+        <col style="width: 103px">
+        <col style="width: 145px">
+        <col style="width: 604px">
+    </colgroup>
+    <thead>
+    <tr>
+        <th class="tg-eycs">Autor</th>
+        <th class="tg-eycs">Title</th>
+        <th class="tg-eycs">Text</th>
+    </tr>
+    </thead>
+    <body>
+    <tr>
+        <td class="tg-0lax">{{post.user.username}}</td>
+        <td class="tg-0lax">{{post.title}}</td>
+        <td class="tg-0lax">{{post.text}}</td>
+    </tr>
+    {% if post.media_attachments %}
+    <tr>
+        <td class="tg-0lax" colspan="3">Attachments:
+
+            {% for attachment in post.media_attachments %}
+            {% if attachment.fileType == "image/jpeg" or attachment.fileType == "image/png" %}
+            <img src="media\{{ attachment.fileName }}" type="{{attachment.fileType}}" width="100">
+            {% endif %}
+            {% if attachment.fileType == "video/mp4" %}
+            <video src="media\{{ attachment.fileName }}" type="{{attachment.fileType}}" autostart="true" controls="true"
+                   width="400"></video>
+            <!--                <embed src="media\{{ attachment.fileName }}" type="{{attachment.fileType}}" autostart="true" width="100" /></embed>-->
+            {% endif %}
+
+            {% endfor %}
+        </td>
+    </tr>
+
+    {% endif %}
+
+    {% if post.acceptedAnswers %}
+    <tr>
+        <td class="tg-0lax" colspan="3">Answers:</td>
+    </tr>
+    <tr>
+        <td class="tg-0lax" colspan="3">
+            {% for answer in post.acceptedAnswers %}
+            <p style="text-align: left;">({{answer.user.username}}): {{answer.text}} </p>
+            <hr>
+            {% endfor %}
+
+        </td>
+    </tr>
+        {% endif %}
+
+    </body>
+</table>
+<button><a href="{{post.get_newanswer_url}}">New Answer</a></button>
+
+<hr>
+
+{% endfor %}
+<button><a href="{{category.get_newpost_url}}">Create your Post</a></button>
+<hr>
+{% endfor %}
+
+<!-- Проверяем что поддерживается постраничный вывод -->
+{% if is_paginated %}
+<!-- Если доступна предыдущая страница, то даём ссылку на неё и самую первую страницу -->
+{% if page_obj.has_previous %}
+<a href="?page=1">First</a>
+<a href="?page={{ page_obj.previous_page_number }}"><<<</a>
+{% endif %}
+
+<!-- Показываем только текущую страницу и ближайшие к ней, чтобы список не тянулся и не захламлял страницу -->
+{% for num in page_obj.paginator.page_range %}
+{% if page_obj.number == num %}
+<a>{{ num }}</a>
+{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+<a href="?page={{ num }}">{{ num }}</a>
+{% endif %}
+{% endfor %}
+
+<!-- Если есть следующая страница, то даём ссылку на неё и на самую последнюю страницу -->
+{% if page_obj.has_next %}
+<a href="?page={{ page_obj.next_page_number }}">>>></a>
+<a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+{% endif %}
+{% endif%}
+{{post}}
+
+{% endblock content %}
+
